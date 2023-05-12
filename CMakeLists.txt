@@ -13,6 +13,7 @@ pkg_check_modules(EIGEN eigen3)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cddeigen
+  DEPENDS EIGEN
 )
 
 include_directories(
