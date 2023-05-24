@@ -237,7 +237,7 @@ namespace cddeigen{
           }
           V_idx++;
         }
-      }std::cerr<<"V"<<std::endl;std::cerr<<V<<std::endl;
+      }
 
       // free
       dd_FreeMatrix(A);
