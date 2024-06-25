@@ -271,6 +271,12 @@ namespace cddeigen{
       return false;
     }
 
+    if(V.cols() == 0 &&
+       R_nonneg.cols() == 0 &&
+       R_free.cols() == 0){
+      return false;
+    }
+
     // setup G
     ddf_MatrixPtr G=ddf_CreateMatrix(V.cols()+R_nonneg.cols()+R_free.cols(),V.rows()+1);
     for (size_t i = 0; i < V.cols(); i++){
@@ -386,6 +392,12 @@ namespace cddeigen{
 
     if( (V.rows() != R_nonneg.rows()) || (R_nonneg.rows() != R_free.rows()) ) {
       std::cerr << "[cddeigen::VtoH] dimention mismatch" << std::endl;
+      return false;
+    }
+
+    if(V.cols() == 0 &&
+       R_nonneg.cols() == 0 &&
+       R_free.cols() == 0){
       return false;
     }
 
