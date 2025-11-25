@@ -1,8 +1,10 @@
 #include <cddeigen/cddeigen.h>
 #include <iostream>
+#include <mutex>
 
 namespace cddeigen{
   static bool initialized=false;
+  static std::mutex mutex; // cddlibはthread safeではないため. 最新版では改善されているようだが、ubuntu20にaptのlibcdd-devで入るversion 094j-2は2018年のバージョンであるためいずれにせよ不可. https://github.com/cddlib/cddlib/issues/81 https://github.com/cddlib/cddlib/issues/43
 
   //ddをddfに変えるとgmpを使わなくなる
 
@@ -14,7 +16,9 @@ namespace cddeigen{
              Eigen::MatrixXd& R_nonneg,
              Eigen::MatrixXd& R_free,
              bool verbose){
-    if(!initialized) ddf_set_global_constants();
+    std::lock_guard<std::mutex> guard(cddeigen::mutex);
+
+    if(!cddeigen::initialized) ddf_set_global_constants();
 
     if( (A_eq.rows() != b_eq.rows()) || (A_ineq.rows() != b_ineq.rows()) || (A_eq.cols() != A_ineq.cols())) {
       std::cerr << "[cddeigen::HtoV] dimention mismatch" << std::endl;
@@ -134,7 +138,9 @@ namespace cddeigen{
                 Eigen::MatrixXd& R_free,
                 bool verbose,
                 unsigned long int denom){
-    if(!initialized) dd_set_global_constants();
+    std::lock_guard<std::mutex> guard(cddeigen::mutex);
+
+    if(!cddeigen::initialized) dd_set_global_constants();
 
     if( (A_eq.rows() != b_eq.rows()) || (A_ineq.rows() != b_ineq.rows()) || (A_eq.cols() != A_ineq.cols())) {
       std::cerr << "[cddeigen::HtoV] dimention mismatch" << std::endl;
@@ -264,7 +270,9 @@ namespace cddeigen{
              Eigen::MatrixXd& A_ineq,
              Eigen::VectorXd& b_ineq,
              bool verbose){
-    if(!initialized) ddf_set_global_constants();
+    std::lock_guard<std::mutex> guard(cddeigen::mutex);
+
+    if(!cddeigen::initialized) ddf_set_global_constants();
 
     if( (V.rows() != R_nonneg.rows()) || (R_nonneg.rows() != R_free.rows()) ) {
       std::cerr << "[cddeigen::VtoH] dimention mismatch" << std::endl;
@@ -388,7 +396,9 @@ namespace cddeigen{
                 Eigen::VectorXd& b_ineq,
                 bool verbose,
                 unsigned long int denom){
-    if(!initialized) dd_set_global_constants();
+    std::lock_guard<std::mutex> guard(cddeigen::mutex);
+
+    if(!cddeigen::initialized) dd_set_global_constants();
 
     if( (V.rows() != R_nonneg.rows()) || (R_nonneg.rows() != R_free.rows()) ) {
       std::cerr << "[cddeigen::VtoH] dimention mismatch" << std::endl;
